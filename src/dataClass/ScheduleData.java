@@ -1,5 +1,6 @@
 package dataClass;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -11,7 +12,8 @@ import javafx.beans.property.StringProperty;
 
 //DTOクラス
 
-public class ScheduleData {
+public class ScheduleData implements Serializable{
+	private static final long serialVersionID = 1L;
 	
     private StringProperty title = new SimpleStringProperty();
     private String time = new String();
