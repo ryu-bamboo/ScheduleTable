@@ -5,12 +5,11 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import application.CalendarMain;
-import database.ScheduleConnection;
-import database.ScheduleDAO;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import serialize.SDReadWrite;
 
 public class ScheduleDeleteController {
 
@@ -34,9 +33,6 @@ public class ScheduleDeleteController {
 
     @FXML
     private ComboBox<String> day;
-    
-    private ScheduleConnection scn = new ScheduleConnection();
-	private ScheduleDAO dao = new ScheduleDAO(scn.getConnection());
 
     @FXML
     void delete(MouseEvent event) {
@@ -44,7 +40,7 @@ public class ScheduleDeleteController {
     	int month = Integer.parseInt(this.month.getValue());
     	int day = Integer.parseInt(this.day.getValue());
     	String name = this.name.getValue();
-    	dao.delete(LocalDate.of(year,month,day),name);
+    	SDReadWrite.delete(LocalDate.of(year,month,day),name);
     	ScheduleEditController.stage.close();
     	AddDataAndLabel.stage.close();
     }

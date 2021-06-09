@@ -1,10 +1,9 @@
 package calendar.packageChange;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import database.PackagesDAO;
-import database.ScheduleConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
+import serialize.PDReadWrite;
 
 public class PackageEditController {
 
@@ -45,24 +45,21 @@ public class PackageEditController {
 
     
     private ObservableList<String> oList = FXCollections.observableArrayList();    
-    private ScheduleConnection scn = new ScheduleConnection();
-   	private PackagesDAO pdao = new PackagesDAO(scn.getConnection());
-
 
     @FXML
-    void tuika(MouseEvent event) {
-    	if(pdao.compare(sinki.getText())) {
-    		pdao.insert(sinki.getText());
-        	pdao.setColors(sinki.getText(), "#FEFEFE");
+    void tuika(MouseEvent event) throws URISyntaxException {
+    	if(!new PDReadWrite().included(sinki.getText())) {
+    		new PDReadWrite().insert(sinki.getText());
+        	new PDReadWrite().setColor(sinki.getText(), "#FEFEFE");
         	oList.add(sinki.getText());
     	}
     }
     
     @FXML
-    void execute(MouseEvent event) {
+    void execute(MouseEvent event) throws URISyntaxException {
     	if(!ato.getText().equals("\s*")) {
-    		if(pdao.compare(ato.getText())) {
-    			pdao.update(moto.getText(), ato.getText());
+    		if(!new PDReadWrite().included(ato.getText())) {
+    			new PDReadWrite().update(moto.getText(), ato.getText());
         		oList.removeAll(moto.getText());
         		oList.addAll(ato.getText());
     		}
@@ -77,7 +74,12 @@ public class PackageEditController {
     		var alert = new Alert(AlertType.WARNING,"削除する？",ButtonType.OK,ButtonType.CANCEL);
     		alert.showAndWait().ifPresent(response -> {
     			if(response == ButtonType.OK) {
-    				pdao.delete(moto.getText());
+    				try {
+						new PDReadWrite().delete(moto.getText());
+					} catch (URISyntaxException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					}
     				oList.removeAll(moto.getText());
     				alert.close();
     			}else {
@@ -88,7 +90,7 @@ public class PackageEditController {
 
 
     @FXML
-    void initialize() {
+    void initialize() throws URISyntaxException {
     	list.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
 			
 			@Override
@@ -96,7 +98,7 @@ public class PackageEditController {
 				return new ButtonCell();
 			}
 		});
-    	var datas = pdao.find();  	
+    	var datas = new PDReadWrite().findPack();  	
     	for(var data :datas) {
     		oList.add(data);
     	}

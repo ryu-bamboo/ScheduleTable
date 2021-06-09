@@ -1,12 +1,10 @@
 package calendar.scheduleTable;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import application.CalendarMain;
 import calendar.CalendarController;
-import database.PackagesDAO;
-import database.ScheduleConnection;
-import database.ScheduleDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +14,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import serialize.PDReadWrite;
+import serialize.SDReadWrite;
 
 public class ScheduleSelectController {
 	
@@ -56,21 +56,19 @@ public class ScheduleSelectController {
 	    @FXML // fx:id="day"
 	    private ComboBox<String> day; // Value injected by FXMLLoader
 	    
-	    private ScheduleConnection scn = new ScheduleConnection();
-		private ScheduleDAO dao = new ScheduleDAO(scn.getConnection());
-		private PackagesDAO pdao = new PackagesDAO(scn.getConnection());
+	    
 		CreateDataAndLabel adal = new AddDataAndLabel();
 	    
 
 	    
 	    
 	    @FXML
-	    void jikkou(MouseEvent event) {
+	    void jikkou(MouseEvent event) throws URISyntaxException {
 	    	var editData = adal.addData(packageSelect, year, month, day, scheduleName, sHour, sMinute, fHour, fMinute, scheduleSelect, memo);
 	    	adal.createScheduleLabel(editData, CalendarController.stController.getaPane());
-	    	dao.insert(editData);
-	    	pdao.insert(editData.packageSelectProperty().get());
-	    	pdao.setColors(editData.packageSelectProperty().getValue(), "#FEFEFE");
+	    	SDReadWrite.insert(editData);
+	    	new PDReadWrite().insert(editData.packageSelectProperty().get());
+	    	new PDReadWrite().setColor(editData.packageSelectProperty().getValue(), "#FEFEFE");
 	    	System.out.println("追加しました。");
 	    	
 	    }
@@ -78,13 +76,13 @@ public class ScheduleSelectController {
 	   
 	    
 	    @SuppressWarnings("static-access")
-		@FXML private void initialize() throws IOException {
+		@FXML private void initialize() throws IOException, URISyntaxException {
 	    	var ld = CalendarMain.cController.ld;
 	    	year.setValue(Integer.toString(ld.getYear()));
 	    	month.setValue(Integer.toString(ld.getMonthValue()));
 	    	day.setValue(Integer.toString(ld.getDayOfMonth()));
 	    	ObservableList<String> pItems = FXCollections.observableArrayList();
-	    	pItems.addAll(pdao.find());
+	    	pItems.addAll(new PDReadWrite().findPack());
 	    	packageSelect.setItems(pItems);
 	    	
 	    	ObservableList<String> hItems = FXCollections.observableArrayList();

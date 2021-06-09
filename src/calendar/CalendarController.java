@@ -20,9 +20,6 @@ import calendar.scheduleTable.CreateDataAndLabel;
 import calendar.scheduleTable.ScheduleTableController;
 import dataClass.PackAndColorData;
 import dataClass.ScheduleData;
-import database.PackagesDAO;
-import database.ScheduleConnection;
-import database.ScheduleDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,6 +40,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import serialize.PDReadWrite;
+import serialize.SDReadWrite;
 
 public class CalendarController {
 	
@@ -99,9 +98,6 @@ public class CalendarController {
     int lastDate;
     
     CreateDataAndLabel adal = new AddDataAndLabel();
-    private ScheduleConnection scn = new ScheduleConnection();
-	private ScheduleDAO dao = new ScheduleDAO(scn.getConnection());
-	private PackagesDAO pdao = new PackagesDAO(scn.getConnection());	
 	private ObservableList<String> pItems = FXCollections.observableArrayList();
 
 	 @FXML
@@ -161,10 +157,10 @@ public class CalendarController {
 		   }
 	 
 	 @FXML
-	    void tekiyou(MouseEvent event) {
+	    void tekiyou(MouseEvent event) throws URISyntaxException {
 	    	var pack = pp.getValue();
 	    	var col = cp.getValue().toString();
-	    	pdao.setColors(pack, col);
+	    	new PDReadWrite().setColor(pack, col);
 	    }
 	 
 	 @FXML
@@ -173,7 +169,7 @@ public class CalendarController {
 	 }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
-    void initialize() throws IOException, URISyntaxException {
+    void initialize() throws IOException, URISyntaxException, ClassNotFoundException {
     	List<String> youbi = new ArrayList<String>(7) {
 	    	{	add("日");
 	    		add("月");
@@ -197,13 +193,13 @@ public class CalendarController {
     	ld = LocalDate.now();
     	setCalendar(ld);
     	
-    	pItems.addAll(pdao.find());
+    	pItems.addAll(new PDReadWrite().findPack());
     	pp.setItems(pItems);
     }
     
     
     @SuppressWarnings("static-access")
-	private void setCalendar(LocalDate ld) throws IOException, URISyntaxException {
+	private void setCalendar(LocalDate ld) throws IOException, URISyntaxException, ClassNotFoundException {
     	calendarMatrix.setGridLinesVisible(true);
      year = ld.getYear();
      month = ld.getMonthValue();
@@ -226,28 +222,35 @@ public class CalendarController {
 	    	try {
 				int day = Integer.valueOf(label.getText());
 				this.ld = LocalDate.of(year, month, day);
-				showScheduleTable();
-				} catch (IOException e) {
+				try {
+					showScheduleTable();
+				} catch (URISyntaxException e) {
+					// TODO 自動生成された catch ブロック
+					e.printStackTrace();
+				}
+				} catch (IOException | ClassNotFoundException e) {
 			 e.printStackTrace();}});//イベント
 	    	vb.getChildren().add(label);
 	      if(LocalDate.of(year, month, date).equals(ld)) {
 	    	  vb.setStyle("-fx-background-color:#fbf8c4");
 	      }
 	       
-	    	var toDoToDay = dao.findByDate(LocalDate.of(year, month, date));
-	        for(var data :toDoToDay) {
-	        	String colStr = pdao.findColor(data.packageSelectProperty().get());
-	        	if(colStr==null) {
-	        		colStr="#FFFFFF";
-	        	}
-	        	var rx = "0x";
-	        	if(colStr.contains(rx)) {
-	        		colStr = colStr.replaceAll("0x","#");
-	        	}
-	        	var toDoLabel = new Label(data.titleProperty().get());
-	        	toDoLabel.setStyle("-fx-text-fill: #006464; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: " +colStr+";"); 
-	    	    vb.getChildren().add(toDoLabel);
-	        }
+	    	var toDoToDay = new SDReadWrite().findByDate(LocalDate.of(year, month, date));
+	    	if(toDoToDay!=null) {
+	    		for(var data :toDoToDay) {
+		        	String colStr = new PDReadWrite().findColor(data.packageSelectProperty().get());
+		        	if(colStr==null) {
+		        		colStr="#FFFFFF";
+		        	}
+		        	var rx = "0x";
+		        	if(colStr.contains(rx)) {
+		        		colStr = colStr.replaceAll("0x","#");
+		        	}
+		        	var toDoLabel = new Label(data.titleProperty().get());
+		        	toDoLabel.setStyle("-fx-text-fill: #006464; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: " +colStr+";"); 
+		    	    vb.getChildren().add(toDoLabel);
+		        }
+	    	}
 	        calendarMatrix.add(vb, column, row);
 		    if (column == 6) {
 		      row++;
@@ -264,7 +267,7 @@ public class CalendarController {
 	            }
 	        });
 	        ObservableList<PackAndColorData> datas = FXCollections.observableArrayList();
-	        datas.addAll(pdao.findAll());
+	        datas.addAll(new PDReadWrite().read());
 	        packColor.setItems(datas);	        
 	  }
 	  
@@ -285,13 +288,13 @@ public class CalendarController {
 	  calendarMatrix.setStyle("-fx-background-image: url(file:"+str+");-fx-background-repeat:stretch;	-fx-background-position: center center;	-fx-background-size: 400 400;-fx-background-radius: 5.0;-fx-border-style:  solid;-fx-effect: dropshadow(three-pass-box,rgba(128,128,128,0.5),200,0.5,0,0);-fx-text-fill: chocolate;");
     }
     
-    void showScheduleTable() throws IOException  {
+    void showScheduleTable() throws IOException, ClassNotFoundException, URISyntaxException  {
 	
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("scheduleTable/ScheduleIndividual.fxml"));
 		Scene scene = new Scene((VBox)fxmlLoader.load(),150,670);		
 		stController = fxmlLoader.getController();
 		
-		List<ScheduleData> initList = dao.findByDate(ld);
+		List<ScheduleData> initList = new SDReadWrite().findByDate(ld);
 		for(ScheduleData sd : initList) {
 			adal.createScheduleLabel(sd,stController.getaPane());
 		}

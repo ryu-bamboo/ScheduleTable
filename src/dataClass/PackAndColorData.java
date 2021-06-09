@@ -1,9 +1,11 @@
 package dataClass;
 
+import java.io.Serializable;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class PackAndColorData {
+public class PackAndColorData implements Serializable{
 	private StringProperty pack = new SimpleStringProperty();
 	private StringProperty color = new SimpleStringProperty();
 	 

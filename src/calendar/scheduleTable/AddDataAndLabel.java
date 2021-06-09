@@ -1,12 +1,11 @@
 package calendar.scheduleTable;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import dataClass.ScheduleData;
-import database.PackagesDAO;
-import database.ScheduleConnection;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +16,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import serialize.PDReadWrite;
 
 public class AddDataAndLabel implements CreateDataAndLabel {
 	
@@ -24,9 +24,6 @@ public class AddDataAndLabel implements CreateDataAndLabel {
 	public static ObjectProperty<LocalTime> startTime ;
     public static ObjectProperty<LocalTime> finishTime;
     public static Stage stage;
-    
-    private ScheduleConnection scn = new ScheduleConnection();
-   	private PackagesDAO pdao = new PackagesDAO(scn.getConnection());
 
 	@Override
 	public ScheduleData addData(ComboBox<String> packageSelect,ComboBox<String> year,ComboBox<String> month,ComboBox<String> day,TextField scheduleName,ComboBox<String> sHour,ComboBox<String> sMinute,ComboBox<String> fHour,ComboBox<String> fMinute,AnchorPane scheduleSelect,TextArea memo) {
@@ -44,7 +41,7 @@ public class AddDataAndLabel implements CreateDataAndLabel {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public void createScheduleLabel(ScheduleData data,AnchorPane aPane) {
+	public void createScheduleLabel(ScheduleData data,AnchorPane aPane) throws URISyntaxException {
 		var sLabel = new Label();
  		double stNum = (data.startTimeProperty().get().getHour()+data.startTimeProperty().get().getMinute()/60)*30+4;
  	    double ftNum = (data.finishTimeProperty().get().getHour()+data.finishTimeProperty().get().getMinute()/60)*30+4;
@@ -52,10 +49,7 @@ public class AddDataAndLabel implements CreateDataAndLabel {
  		String str = data.titleProperty().get()+"\n"+data.getTime()+"\n"+data.detailProperty().get();
  		sLabel.setText(str);
  		
- 		String colStr = pdao.findColor(data.packageSelectProperty().get());
- 		if(colStr==null) {
-    		colStr="#FFFFFF";
-    	}
+ 		String colStr = new PDReadWrite().findColor(data.packageSelectProperty().get());
  		var rx = "0x";
     	if(colStr.contains(rx)) {
     		colStr = colStr.replaceAll("0x","#");

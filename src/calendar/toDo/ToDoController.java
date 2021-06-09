@@ -1,14 +1,14 @@
 package calendar.toDo;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import dataClass.ScheduleData;
-import database.PackagesDAO;
-import database.ScheduleConnection;
-import database.ScheduleDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +21,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import serialize.PDReadWrite;
+import serialize.SDReadWrite;
 
 public class ToDoController {
 
@@ -55,36 +57,45 @@ public class ToDoController {
     private VBox vb;
     
     private ObservableList<ScheduleData> oList;
-    private ScheduleConnection scn = new ScheduleConnection();
-   	private ScheduleDAO dao = new ScheduleDAO(scn.getConnection());
-   	private PackagesDAO pdao = new PackagesDAO(scn.getConnection());
+
    	
    	@FXML
-    void reset(MouseEvent event) {
+    void reset(MouseEvent event) throws FileNotFoundException, ClassNotFoundException, IOException {
    		oList.clear();
-   		oList.addAll(dao.findByDateCompare(LocalDate.now()));
+   		oList.addAll(SDReadWrite.findByDateCompare(LocalDate.now()));
     }
    	
    	
 
     @FXML
-    void initialize() {
+    void initialize() throws FileNotFoundException, ClassNotFoundException, IOException, URISyntaxException {
     	//表に追加
     	oList = FXCollections.observableArrayList();
-    	for(ScheduleData data :dao.findByDateCompare(LocalDate.now())) {
+    	for(ScheduleData data :SDReadWrite.findByDateCompare(LocalDate.now())) {
     		oList.add(data);
     	}   	
         date.setCellValueFactory(x -> x.getValue().dateProperty());
         toDo.setCellValueFactory(x -> x.getValue().titleProperty());
         table.itemsProperty().setValue(oList);       
         ArrayList<String> packList = new ArrayList<String>();
-        packList.addAll(pdao.find());
+        packList.addAll(new PDReadWrite().findPack());
         for(String data :packList) {
         	Button button = new Button(data);
         	button.setOnAction(new EventHandler<ActionEvent>() {				
 				@Override
 				public void handle(ActionEvent var1) {
-					choice(data);					
+					try {
+						choice(data);
+					} catch (FileNotFoundException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
+					}					
 				}
 			});
         	packages.getChildren().add(button);
@@ -94,14 +105,14 @@ public class ToDoController {
 
     }
     
-    private void choice(String pack) {
+    private void choice(String pack) throws FileNotFoundException, ClassNotFoundException, IOException {
     	oList.clear();
     	if(mukasi.selectedProperty().get()) {
-    		for(ScheduleData data :dao.findByPackage(pack)) {
+    		for(ScheduleData data :SDReadWrite.findByPackage(pack)) {
         		oList.add(data);
         	} 
     	}else {
-    		for(ScheduleData data :dao.findByPackageFuture(pack,LocalDate.now())) {
+    		for(ScheduleData data :SDReadWrite.findByPackageFuture(pack,LocalDate.now())) {
         		oList.add(data);
         	} 
     	}
