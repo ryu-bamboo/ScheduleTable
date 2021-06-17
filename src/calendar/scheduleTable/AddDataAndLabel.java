@@ -46,14 +46,10 @@ public class AddDataAndLabel implements CreateDataAndLabel {
  		double stNum = (data.startTimeProperty().get().getHour()+data.startTimeProperty().get().getMinute()/60)*30+4;
  	    double ftNum = (data.finishTimeProperty().get().getHour()+data.finishTimeProperty().get().getMinute()/60)*30+4;
  	    double tNum = ftNum-stNum;
- 		String str = data.titleProperty().get()+"\n"+data.getTime()+"\n"+data.detailProperty().get();
+ 		String str = data.titleProperty().get()+"\n"+data.timeProperty().get()+"\n"+data.detailProperty().get();
  		sLabel.setText(str);
  		
  		String colStr = new PDReadWrite().findColor(data.packageSelectProperty().get());
- 		var rx = "0x";
-    	if(colStr.contains(rx)) {
-    		colStr = colStr.replaceAll("0x","#");
-    	}
  		sLabel.setStyle("-fx-text-fill: #006464; -fx-background-color: " +colStr+";");
  		
  		sLabel.setOnMouseClicked(event -> {

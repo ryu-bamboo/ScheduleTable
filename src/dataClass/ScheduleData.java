@@ -14,13 +14,21 @@ import javafx.beans.property.StringProperty;
 
 public class ScheduleData implements Serializable{
 	
-    private StringProperty title = new SimpleStringProperty();
-    private String time = new String();
-    private StringProperty detail = new SimpleStringProperty();
-    private ObjectProperty<LocalTime> startTime = new SimpleObjectProperty<LocalTime>();
-    private ObjectProperty<LocalTime> finishTime = new SimpleObjectProperty<LocalTime>();
-    private ObjectProperty<LocalDate> date = new SimpleObjectProperty<LocalDate>();
-    private StringProperty packageSelect = new SimpleStringProperty();
+    private transient StringProperty title = new SimpleStringProperty();
+    private transient StringProperty time = new SimpleStringProperty();
+    private transient StringProperty detail = new SimpleStringProperty();
+    private transient ObjectProperty<LocalTime> startTime = new SimpleObjectProperty<LocalTime>();
+    private transient ObjectProperty<LocalTime> finishTime = new SimpleObjectProperty<LocalTime>();
+    private transient ObjectProperty<LocalDate> date = new SimpleObjectProperty<LocalDate>();
+    private transient StringProperty packageSelect = new SimpleStringProperty();
+    
+    String titleS;
+    String timeS;
+    String detailS;
+    LocalTime startTimeS;
+    LocalTime finishTimeS;
+    LocalDate dateS;
+    String packageSelectS;
     
     /**
      * コンストラクタ.
@@ -36,7 +44,7 @@ public class ScheduleData implements Serializable{
     public ScheduleData(LocalDate ld,String title,LocalTime startTime, LocalTime finishTime, String detail,String packageSelect) {
     	this.date.set(ld);
     	this.title.set(title);    	
-    	this.setTime(startTime+"～"+finishTime);
+    	this.time.set(startTime+"～"+finishTime);
         this.detail.set(detail);
         this.startTime.set(startTime);
         this.finishTime.set(finishTime);
@@ -44,9 +52,33 @@ public class ScheduleData implements Serializable{
     }
 
 
-   
+    public void init() {
+		title = new SimpleStringProperty();
+		time = new SimpleStringProperty();
+		detail = new SimpleStringProperty();
+		startTime = new SimpleObjectProperty<LocalTime>();
+		finishTime = new SimpleObjectProperty<LocalTime>();
+		date = new SimpleObjectProperty<LocalDate>();
+		packageSelect = new SimpleStringProperty();
+		
+		title.set(titleS);
+		time.set(timeS);
+		detail.set(detailS);
+		startTime.set(startTimeS);
+		finishTime.set(finishTimeS);
+		date.set(dateS);
+		packageSelect.set(packageSelectS);
+	}
     
-    
+    public void writePre() {
+		titleS = title.getValue();
+		timeS = time.getValue();
+		detailS = detail.getValue();
+		startTimeS = startTime.getValue();
+		finishTimeS = finishTime.getValue();
+		dateS = date.getValue();
+		packageSelectS = packageSelect.getValue();
+	}
     
 	public void setTitle(StringProperty title) {
 		this.title = title;
@@ -56,11 +88,11 @@ public class ScheduleData implements Serializable{
 		return title;
 	}
 
-	public String getTime() {
+	public StringProperty timeProperty() {
 		return time;
 	}
 
-	public void setTime(String string) {
+	public void setTime(StringProperty string) {
 		this.time = string;
 	}
 

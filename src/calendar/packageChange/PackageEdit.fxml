@@ -10,9 +10,9 @@
    <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="76.0" layoutY="334.0" mnemonicParsing="false" onMouseClicked="#tuika" text="追加" />
+            <Button layoutX="76.0" layoutY="334.0" mnemonicParsing="false" onKeyPressed="#enter" onMouseClicked="#tuika" text="追加" />
             <TextField fx:id="sinki" layoutX="26.0" layoutY="248.0" prefHeight="31.0" prefWidth="149.0" promptText="新規" />
-            <Label fx:id="moto" alignment="CENTER" layoutX="27.0" layoutY="61.0" prefHeight="39.0" prefWidth="138.0" text="Label">
+            <Label fx:id="moto" alignment="CENTER" layoutX="27.0" layoutY="61.0" prefHeight="39.0" prefWidth="138.0" text="編集するパッケージ">
                <font>
                   <Font size="18.0" />
                </font>

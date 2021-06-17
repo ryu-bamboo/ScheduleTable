@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 import serialize.PDReadWrite;
@@ -52,7 +53,24 @@ public class PackageEditController {
     		new PDReadWrite().insert(sinki.getText());
         	new PDReadWrite().setColor(sinki.getText(), "#FEFEFE");
         	oList.add(sinki.getText());
+        	sinki.clear();
     	}
+    }
+    
+    @FXML
+    void enter(KeyEvent e) {
+    	switch(e.getCode()) {
+		case ENTER:
+			if(!new PDReadWrite().included(sinki.getText())) {
+	    		new PDReadWrite().insert(sinki.getText());
+	        	new PDReadWrite().setColor(sinki.getText(), "#FEFEFE");
+	        	oList.add(sinki.getText());
+	        	sinki.clear();
+	    	}
+			break;
+		default:
+			break;
+		}
     }
     
     @FXML
@@ -62,6 +80,8 @@ public class PackageEditController {
     			new PDReadWrite().update(moto.getText(), ato.getText());
         		oList.removeAll(moto.getText());
         		oList.addAll(ato.getText());
+        		ato.clear();
+        		moto.setText("編集するパッケージ");
     		}
     	}else {
     		System.out.println("変更後の名前を入力してください。");
@@ -74,12 +94,7 @@ public class PackageEditController {
     		var alert = new Alert(AlertType.WARNING,"削除する？",ButtonType.OK,ButtonType.CANCEL);
     		alert.showAndWait().ifPresent(response -> {
     			if(response == ButtonType.OK) {
-    				try {
-						new PDReadWrite().delete(moto.getText());
-					} catch (URISyntaxException e) {
-						// TODO 自動生成された catch ブロック
-						e.printStackTrace();
-					}
+    				new PDReadWrite().delete(moto.getText());
     				oList.removeAll(moto.getText());
     				alert.close();
     			}else {
@@ -103,7 +118,6 @@ public class PackageEditController {
     		oList.add(data);
     	}
     	list.itemsProperty().setValue(oList);
-    	
     	
     }
     

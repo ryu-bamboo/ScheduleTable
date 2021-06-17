@@ -43,7 +43,7 @@ public class ScheduleTableController  {
     private VBox pane; // Value injected by FXMLLoader
     
     @FXML // fx:id="aPane"
-    private AnchorPane aPane; // Value injected by FXMLLoader
+    public static AnchorPane aPane; // Value injected by FXMLLoader
     
     @FXML // fx:id="aPane"
     private VBox scheduleIndividual; // Value injected by FXMLLoader
@@ -92,7 +92,7 @@ public class ScheduleTableController  {
    		
    		var str = "";  	  
   	  try(var reader = Files.newBufferedReader(
-  			  Paths.get(this.getClass().getResource("scheduleImage.txt").toURI()))){
+  			  Paths.get("C:/Users/user/scheFiles/calendarImage.txt"))){
   		  var line = "";
   		  while((line = reader.readLine()) != null) {
   			  str = line;

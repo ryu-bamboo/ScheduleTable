@@ -6,13 +6,29 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class PackAndColorData implements Serializable{
-	private StringProperty pack = new SimpleStringProperty();
-	private StringProperty color = new SimpleStringProperty();
+	public static final long serialVersionUID = 1L;
+	
+	private transient StringProperty pack = new SimpleStringProperty();
+	private transient StringProperty color = new SimpleStringProperty();
+	String packS;
+	String colS;
 	 
 	
 	public PackAndColorData(String pack, String color) {
 		this.pack.set(pack);
 		this.color.set(color);
+	}
+	
+	public void init() {
+		pack = new SimpleStringProperty();
+		color = new SimpleStringProperty();
+		this.pack.set(packS);
+		this.color.set(colS);
+	}
+	
+	public void writePre() {
+		packS = pack.getValueSafe();
+		colS = color.getValueSafe();
 	}
 	
 	public StringProperty packPriperty() {
@@ -22,6 +38,16 @@ public class PackAndColorData implements Serializable{
 	public StringProperty colorPriperty() {
 		return color;
 	}
+	
+	
+	public String getPack() {
+		return packS;
+	}
+	
+	public String getCol() {
+		return colS;
+	}
+	
 }
 
 

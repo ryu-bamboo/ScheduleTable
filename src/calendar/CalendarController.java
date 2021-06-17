@@ -103,7 +103,7 @@ public class CalendarController {
 	 @FXML
 	 void toDo(MouseEvent event) throws IOException {
 	   	var fxmlLoader = new FXMLLoader(getClass().getResource("todo/ToDo.fxml"));
-		Scene scene = new Scene((BorderPane)fxmlLoader.load(),400,400);	
+		Scene scene = new Scene((BorderPane)fxmlLoader.load(),500,400);	
 		Stage primaryStage = new Stage();
 		primaryStage.setScene(scene);
 		primaryStage.show();
@@ -130,8 +130,7 @@ public class CalendarController {
 	 @FXML
 	 void kettei(MouseEvent event) throws Exception, URISyntaxException {
 		 calendarMatrix.getChildren().clear();
-		 calendarMatrix.setGridLinesVisible(false);
-		 calendarMatrix.setGridLinesVisible(true);
+		 
 		 List<String> youbi = new ArrayList<String>(7) {
 		    	{	add("日");
 		    		add("月");
@@ -160,14 +159,18 @@ public class CalendarController {
 	    void tekiyou(MouseEvent event) throws URISyntaxException {
 	    	var pack = pp.getValue();
 	    	var col = cp.getValue().toString();
+	    	
 	    	new PDReadWrite().setColor(pack, col);
 	    }
 	 
 	 @FXML
 	 void reload(MouseEvent event) throws Exception, Exception {
+		 calendarMatrix.getChildren().clear();
 		 initialize();
 	 }
+	 
 
+	   
     @FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() throws IOException, URISyntaxException, ClassNotFoundException {
     	List<String> youbi = new ArrayList<String>(7) {
@@ -193,13 +196,16 @@ public class CalendarController {
     	ld = LocalDate.now();
     	setCalendar(ld);
     	
+    	pItems.clear();
     	pItems.addAll(new PDReadWrite().findPack());
-    	pp.setItems(pItems);
+        pp.setItems(pItems);
+    	
     }
     
     
     @SuppressWarnings("static-access")
 	private void setCalendar(LocalDate ld) throws IOException, URISyntaxException, ClassNotFoundException {
+    	calendarMatrix.setGridLinesVisible(false);
     	calendarMatrix.setGridLinesVisible(true);
      year = ld.getYear();
      month = ld.getMonthValue();
@@ -212,6 +218,9 @@ public class CalendarController {
 	      // カレンダー表を作成します。
 	  int row = 1;
 	  int column = sYoubi.getValue() ; 
+	  if(column == 7) {
+		  column = 0;
+	  }
 	  for (date = 1; date <= lastDate; date++) {
 		  VBox vb = new VBox(); 
 		  Label label = new Label(String.valueOf(date));
@@ -238,16 +247,11 @@ public class CalendarController {
 	    	var toDoToDay = new SDReadWrite().findByDate(LocalDate.of(year, month, date));
 	    	if(toDoToDay!=null) {
 	    		for(var data :toDoToDay) {
-		        	String colStr = new PDReadWrite().findColor(data.packageSelectProperty().get());
-		        	if(colStr==null) {
-		        		colStr="#FFFFFF";
-		        	}
-		        	var rx = "0x";
-		        	if(colStr.contains(rx)) {
-		        		colStr = colStr.replaceAll("0x","#");
-		        	}
+		        	String colStr = new PDReadWrite().findColor(data.packageSelectProperty().getValue());
 		        	var toDoLabel = new Label(data.titleProperty().get());
-		        	toDoLabel.setStyle("-fx-text-fill: #006464; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: " +colStr+";"); 
+		        	toDoLabel.setStyle("-fx-text-fill: #006464; -fx-border-radius: 20; -fx-background-radius: 20; -fx-background-color: " +colStr+";");
+		        	toDoLabel.setAlignment(Pos.TOP_CENTER);
+		        	toDoLabel.setPrefWidth(Integer.MAX_VALUE);
 		    	    vb.getChildren().add(toDoLabel);
 		        }
 	    	}
@@ -259,16 +263,18 @@ public class CalendarController {
 		      column++;
 		    }
 		    
-		    //パッケージと色の表
-		    packColor.setCellFactory(new Callback<ListView<PackAndColorData>, ListCell<PackAndColorData>>() { // (1)
-	            @Override
-	            public ListCell<PackAndColorData> call(ListView<PackAndColorData> listView) {
-	                return new PackageAndColorCell();
-	            }
-	        });
-	        ObservableList<PackAndColorData> datas = FXCollections.observableArrayList();
-	        datas.addAll(new PDReadWrite().read());
-	        packColor.setItems(datas);	        
+		    if(!packColor.hasProperties()) {
+		    	//パッケージと色の表
+			    packColor.setCellFactory(new Callback<ListView<PackAndColorData>, ListCell<PackAndColorData>>() { // (1)
+		            @Override
+		            public ListCell<PackAndColorData> call(ListView<PackAndColorData> listView) {
+		                return new PackageAndColorCell();
+		            }
+		        });
+		        ObservableList<PackAndColorData> datas = FXCollections.observableArrayList();
+		        datas.addAll(PDReadWrite.packList);
+		        packColor.setItems(datas);	   
+		    }
 	  }
 	  
 	  //月ラベルに値を設定
@@ -277,7 +283,7 @@ public class CalendarController {
 	  var str = "";
 	  
 	  try(var reader = Files.newBufferedReader(
-			  Paths.get(this.getClass().getResource("calendarImage.txt").toURI()))){
+			  Paths.get("C:/Users/user/scheFiles/calendarImage.txt"))){
 		  var line = "";
 		  while((line = reader.readLine()) != null) {
 			  str = line;
@@ -285,7 +291,7 @@ public class CalendarController {
 	  }
 	  
 	  
-	  calendarMatrix.setStyle("-fx-background-image: url(file:"+str+");-fx-background-repeat:stretch;	-fx-background-position: center center;	-fx-background-size: 400 400;-fx-background-radius: 5.0;-fx-border-style:  solid;-fx-effect: dropshadow(three-pass-box,rgba(128,128,128,0.5),200,0.5,0,0);-fx-text-fill: chocolate;");
+	  calendarMatrix.setStyle("-fx-background-image: url(file:"+str+");-fx-background-repeat:stretch; -fx-background-position: center center;	-fx-background-size: 400 400;-fx-background-radius: 5.0;-fx-border-style:  solid;-fx-effect: dropshadow(three-pass-box,rgba(128,128,128,0.5),200,0.5,0,0);-fx-text-fill: chocolate;");
     }
     
     void showScheduleTable() throws IOException, ClassNotFoundException, URISyntaxException  {

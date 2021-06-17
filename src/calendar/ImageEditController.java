@@ -16,8 +16,7 @@ import javafx.stage.FileChooser;
 public class ImageEditController {
 	
 	public ImageEditController() throws URISyntaxException {
-		sURI = this.getClass().getResource("scheduleTable/scheduleImage.txt").toURI();
-		cURI = this.getClass().getResource("calendarImage.txt").toURI();
+		
 	}
 	
     @FXML
@@ -42,7 +41,7 @@ public class ImageEditController {
     	 var file = fc.showOpenDialog(CalendarController.imageStage);
     	 String str = file.toString();
     	 str = str.replace("\\", "/");
-    	 try(var writer = Files.newBufferedWriter(Paths.get(sURI))){
+    	 try(var writer = Files.newBufferedWriter(Paths.get("C:/Users/user/scheFiles/scheduleImage.txt"))){
     
     		 writer.write(str);
     		 writer.newLine();
@@ -59,7 +58,7 @@ public class ImageEditController {
 	 var file = fc.showOpenDialog(CalendarController.imageStage);
 	 String str = file.toString();
 	 str = str.replace("\\", "/");
-	 try(var writer = Files.newBufferedWriter(Paths.get(cURI))){
+	 try(var writer = Files.newBufferedWriter(Paths.get("C:/Users/user/scheFiles/calendarImage.txt"))){
 		 writer.write(str);
 		 writer.newLine();
 	 } catch (IOException e) {

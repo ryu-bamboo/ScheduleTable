@@ -39,7 +39,7 @@ public class PackageAndColorCell extends ListCell<PackAndColorData> {
 	        	pack.setAlignment(Pos.CENTER);
 	        	pack.setPrefWidth(getListView().getWidth()-20);
 	        	StringProperty colStr = data.colorPriperty();
-	        	Color col = Color.valueOf(colStr.get());
+	        	Color col = Color.valueOf(colStr.getValue());
 	        	pack.setBackground(new Background(new BackgroundFill(col, null, null)));
 	        	
 	        	setGraphic(pack);

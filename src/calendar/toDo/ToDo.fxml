@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="469.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="calendar.toDo.ToDoController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="calendar.toDo.ToDoController">
    <top>
       <Label alignment="CENTER" maxWidth="1.7976931348623157E308" prefHeight="30.0" text="TodoList" BorderPane.alignment="CENTER">
          <BorderPane.margin>
@@ -19,10 +19,10 @@
          <children>
             <ScrollPane fx:id="sp" prefHeight="350.0" prefWidth="242.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
                <content>
-                  <TableView fx:id="table" maxWidth="1.7976931348623157E308">
+                  <TableView fx:id="table" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="290.0">
                     <columns>
-                      <TableColumn fx:id="date" maxWidth="85.0" minWidth="70.0" prefWidth="85.0" text="日付" />
-                      <TableColumn fx:id="toDo" maxWidth="1.7976931348623157E308" minWidth="150.0" prefWidth="-1.0" text="ToDo" />
+                      <TableColumn fx:id="date" maxWidth="93.0" minWidth="70.0" prefWidth="93.0" text="日付" />
+                      <TableColumn fx:id="toDo" maxWidth="1.7976931348623157E308" minWidth="141.0" prefWidth="196.0" text="ToDo" />
                     </columns>
                   </TableView>
                </content>

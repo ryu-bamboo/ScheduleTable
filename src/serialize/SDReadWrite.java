@@ -7,42 +7,55 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
 import dataClass.ScheduleData;
 
 public class SDReadWrite {
-	public static ArrayList<ScheduleData> SDList;
-	static File file;
 	
-	public SDReadWrite() throws URISyntaxException {
-		final URL url = this.getClass().getResource("ScheduleFile.txt");
-		file = new File(url.toURI());
+	static File file = new File("C:/Users/user/scheFiles/ScheduleFile.txt");
+	public static ArrayList<ScheduleData> SDList = new  ArrayList<ScheduleData>();
+	
+	public SDReadWrite()  {
+		try {
+			Files.createFile(file.toPath());
+		} catch (IOException e) {
+			return;
+		}
 	}
 	
-	public  void write(ScheduleData sd) throws FileNotFoundException, IOException {
-		try(var out = new ObjectOutputStream(new FileOutputStream(file))){
+	public  void write() throws FileNotFoundException, IOException {
+		
+		if(SDList != null) {
 			for(var data:SDList) {
-				out.writeObject(data);
+				data.writePre();
+			}
+			try(var out = new ObjectOutputStream(new FileOutputStream(file))){
+				out.writeObject(SDList);
+				out.close();
 			}
 		}
 	}
 	
-	public ArrayList<ScheduleData> read() throws FileNotFoundException, IOException, ClassNotFoundException {
+	@SuppressWarnings("unchecked")
+	public void read() {
 		try(var in = new ObjectInputStream(new FileInputStream(file))){
-			SDList = new ArrayList<ScheduleData>();
-			
-			while (true) {
-		        ScheduleData sd = (ScheduleData) in.readObject();
-		        SDList.add(sd);
-		        if(sd.equals(null)) {
-		        	break;
-		        }
+			SDList  = (ArrayList<ScheduleData>)in.readObject();
+			in.close();
+			for(var data: SDList) {
+				data.init();
 			}
-			return SDList;
+			
+		} catch (FileNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+		} catch (ClassNotFoundException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
 		}
 	}
 	
@@ -59,7 +72,7 @@ public class SDReadWrite {
 		return dList;
 	}
 	
-	public static ArrayList<ScheduleData> findByDateCompare(LocalDate ld) throws FileNotFoundException, ClassNotFoundException, IOException {
+	public  ArrayList<ScheduleData> findByDateCompare(LocalDate ld) throws FileNotFoundException, ClassNotFoundException, IOException {
 		var dList = new ArrayList<ScheduleData>();
 		for(var data :SDList) {
 			if(data.dateProperty().getValue().isAfter(ld)) {
@@ -69,7 +82,7 @@ public class SDReadWrite {
 		return dList;
 	}
 	
-	public static ArrayList<ScheduleData> findByPackage(String pack) throws FileNotFoundException, ClassNotFoundException, IOException {
+	public  ArrayList<ScheduleData> findByPackage(String pack) throws FileNotFoundException, ClassNotFoundException, IOException {
 		var dList = new ArrayList<ScheduleData>();
 		for(var data :SDList) {
 			if(data.packageSelectProperty().getValue().equals(pack)) {
@@ -79,7 +92,7 @@ public class SDReadWrite {
 		return dList;
 	}
 	
-	public static ArrayList<ScheduleData> findByPackageFuture(String pack,LocalDate ld) throws FileNotFoundException, ClassNotFoundException, IOException {
+	public ArrayList<ScheduleData> findByPackageFuture(String pack,LocalDate ld) throws FileNotFoundException, ClassNotFoundException, IOException {
 		var dList = new ArrayList<ScheduleData>();
 		for(var data :SDList) {
 			if(data.packageSelectProperty().getValue().equals(pack)) {
@@ -91,17 +104,18 @@ public class SDReadWrite {
 		return dList;
 	}
 	
-	public static void delete(LocalDate ld, String title) {
+	public void delete(LocalDate ld, String title) {
 		for(var data:SDList) {
 			if(data.dateProperty().getValue().equals(ld)) {
 				if(data.titleProperty().getValue().equals(title)) {
 					SDList.remove(data);
+					break;
 				}
 			}
 		}
 	}
 	
-	public static void update(LocalDate oldD, String oldT, ScheduleData newData) {
+	public void update(LocalDate oldD, String oldT, ScheduleData newData) {
 		for(var data:SDList) {
 			if(data.dateProperty().getValue().equals(oldD)) {
 				if(data.titleProperty().getValue().equals(oldT)) {

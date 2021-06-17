@@ -1,5 +1,6 @@
 package calendar.scheduleTable;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -35,14 +36,15 @@ public class ScheduleDeleteController {
     private ComboBox<String> day;
 
     @FXML
-    void delete(MouseEvent event) {
+    void delete(MouseEvent event) throws URISyntaxException {
     	int year = Integer.parseInt(this.year.getValue());
     	int month = Integer.parseInt(this.month.getValue());
     	int day = Integer.parseInt(this.day.getValue());
     	String name = this.name.getValue();
-    	SDReadWrite.delete(LocalDate.of(year,month,day),name);
+    	new SDReadWrite().delete(LocalDate.of(year,month,day),name);
     	ScheduleEditController.stage.close();
     	AddDataAndLabel.stage.close();
+    	
     }
 
     @SuppressWarnings("static-access")

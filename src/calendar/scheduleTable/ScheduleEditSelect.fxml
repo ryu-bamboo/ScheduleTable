@@ -18,7 +18,7 @@
       <Label layoutX="21.0" layoutY="209.0" prefHeight="17.0" prefWidth="28.0" text="日付" />
       <Label layoutX="21.0" layoutY="248.0" text="時間" />
       <Label layoutX="24.0" layoutY="335.0" text="メモ" />
-      <ComboBox fx:id="packageSelect" editable="true" layoutX="74.0" layoutY="127.0" prefHeight="25.0" prefWidth="121.0" promptText="新規作成の場合は入力" />
+      <ComboBox fx:id="packageSelect" layoutX="74.0" layoutY="127.0" prefHeight="25.0" prefWidth="121.0" />
       <TextField fx:id="scheduleName" layoutX="71.0" layoutY="165.0" prefHeight="25.0" prefWidth="127.0" />
       <ComboBox fx:id="year" editable="true" layoutX="60.0" layoutY="205.0" prefHeight="25.0" prefWidth="50.0" />
       <Label layoutX="114.0" layoutY="209.0" prefHeight="17.0" prefWidth="14.0" text="年" />

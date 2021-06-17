@@ -55,7 +55,7 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Button layoutX="14.0" layoutY="65.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" text="カレンダーを表示する（dPickerで）" AnchorPane.bottomAnchor="461.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="65.0" />
-                        <Button layoutX="15.0" layoutY="118.0" mnemonicParsing="false" onMouseClicked="#toDo" prefHeight="45.0" prefWidth="120.0" text="ToDoリスト" />
+                        <Button layoutX="14.0" layoutY="60.0" mnemonicParsing="false" onMouseClicked="#toDo" prefHeight="45.0" prefWidth="120.0" text="ToDoリスト" />
                      </children>
                   </AnchorPane>
             </content>

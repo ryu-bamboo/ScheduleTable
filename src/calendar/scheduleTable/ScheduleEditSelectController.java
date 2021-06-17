@@ -74,7 +74,7 @@ public class ScheduleEditSelectController {
 	    	int oldMonth = Integer.parseInt(this.oldMonth.getValue());
 	    	int oldDay = Integer.parseInt(this.oldDay.getValue());
 	    	String oldName = this.oldName.getValue();
-	    	SDReadWrite.update(LocalDate.of(oldYear,oldMonth,oldDay),oldName,addData());
+	    	new SDReadWrite().update(LocalDate.of(oldYear,oldMonth,oldDay),oldName,addData());
 	    	ScheduleEditController.editStage.close();
 	    	AddDataAndLabel.stage.close();
 	    	new AddDataAndLabel().createScheduleLabel(addData(), CalendarController.stController.getaPane());

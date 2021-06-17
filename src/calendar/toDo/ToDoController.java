@@ -60,9 +60,9 @@ public class ToDoController {
 
    	
    	@FXML
-    void reset(MouseEvent event) throws FileNotFoundException, ClassNotFoundException, IOException {
+    void reset(MouseEvent event) throws FileNotFoundException, ClassNotFoundException, IOException, URISyntaxException {
    		oList.clear();
-   		oList.addAll(SDReadWrite.findByDateCompare(LocalDate.now()));
+   		oList.addAll(new SDReadWrite().findByDateCompare(LocalDate.now()));
     }
    	
    	
@@ -71,7 +71,7 @@ public class ToDoController {
     void initialize() throws FileNotFoundException, ClassNotFoundException, IOException, URISyntaxException {
     	//表に追加
     	oList = FXCollections.observableArrayList();
-    	for(ScheduleData data :SDReadWrite.findByDateCompare(LocalDate.now())) {
+    	for(ScheduleData data : new SDReadWrite().findByDateCompare(LocalDate.now())) {
     		oList.add(data);
     	}   	
         date.setCellValueFactory(x -> x.getValue().dateProperty());
@@ -95,6 +95,9 @@ public class ToDoController {
 					} catch (IOException e) {
 						// TODO 自動生成された catch ブロック
 						e.printStackTrace();
+					} catch (URISyntaxException e) {
+						// TODO 自動生成された catch ブロック
+						e.printStackTrace();
 					}					
 				}
 			});
@@ -105,14 +108,14 @@ public class ToDoController {
 
     }
     
-    private void choice(String pack) throws FileNotFoundException, ClassNotFoundException, IOException {
+    private void choice(String pack) throws FileNotFoundException, ClassNotFoundException, IOException, URISyntaxException {
     	oList.clear();
     	if(mukasi.selectedProperty().get()) {
-    		for(ScheduleData data :SDReadWrite.findByPackage(pack)) {
+    		for(ScheduleData data : new SDReadWrite().findByPackage(pack)) {
         		oList.add(data);
         	} 
     	}else {
-    		for(ScheduleData data :SDReadWrite.findByPackageFuture(pack,LocalDate.now())) {
+    		for(ScheduleData data : new SDReadWrite().findByPackageFuture(pack,LocalDate.now())) {
         		oList.add(data);
         	} 
     	}

@@ -64,11 +64,25 @@ public class ScheduleSelectController {
 	    
 	    @FXML
 	    void jikkou(MouseEvent event) throws URISyntaxException {
-	    	var editData = adal.addData(packageSelect, year, month, day, scheduleName, sHour, sMinute, fHour, fMinute, scheduleSelect, memo);
-	    	adal.createScheduleLabel(editData, CalendarController.stController.getaPane());
+		if(!packageSelect.hasProperties()) {
+			   packageSelect.setValue("default");
+			   }
+	    	var editData = adal.addData(packageSelect, year, month, day, scheduleName, sHour, sMinute, fHour, fMinute, scheduleSelect, memo);   
+	    	
+	    	var judgement = true;
+	    	for(var data:PDReadWrite.packList) {
+	    		if(data.packPriperty().getValue().equals((editData.packageSelectProperty().getValue()))) {
+	    			judgement = false;
+	    		}
+	    	}
+	    	if(judgement) {
+	    		new PDReadWrite().insert(editData.packageSelectProperty().get());
+	    		new PDReadWrite().setColor(editData.packageSelectProperty().getValue(), "#FEFEFE");
+	    	}
+	    	
 	    	SDReadWrite.insert(editData);
-	    	new PDReadWrite().insert(editData.packageSelectProperty().get());
-	    	new PDReadWrite().setColor(editData.packageSelectProperty().getValue(), "#FEFEFE");
+	    	
+	    	adal.createScheduleLabel(editData, CalendarController.stController.getaPane());
 	    	System.out.println("追加しました。");
 	    	
 	    }

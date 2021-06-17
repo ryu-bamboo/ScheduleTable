@@ -1,19 +1,13 @@
-DBコネクションエラー:Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-DBコネクションエラー:Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-DBコネクションエラー:Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+DBコネクションエラー:No suitable driver found for jdbc:mysql://localhost/schedules
+DBコネクションエラー:No suitable driver found for jdbc:mysql://localhost/schedules
+DBコネクションエラー:No suitable driver found for jdbc:mysql://localhost/schedules
 Exception in Application start method
 Exception in thread "main" java.lang.RuntimeException: Exception in Application start method
 	at javafx.graphics/com.sun.javafx.application.LauncherImpl.launchApplication1(LauncherImpl.java:900)
 	at javafx.graphics/com.sun.javafx.application.LauncherImpl.lambda$launchApplication$2(LauncherImpl.java:195)
 	at java.base/java.lang.Thread.run(Thread.java:831)
 Caused by: javafx.fxml.LoadException: 
-file:/C:/Users/user/workspace/SceduleTable/sample.exe!/calendar/CalendarIndividual.fxml
+file:/C:/Users/user/workspace/ScheduleTable/sample.exe!/calendar/CalendarIndividual.fxml
 
 	at javafx.fxml/javafx.fxml.FXMLLoader.constructLoadException(FXMLLoader.java:2707)
 	at javafx.fxml/javafx.fxml.FXMLLoader.loadImpl(FXMLLoader.java:2677)
