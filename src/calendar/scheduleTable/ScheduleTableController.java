@@ -43,7 +43,7 @@ public class ScheduleTableController  {
     private VBox pane; // Value injected by FXMLLoader
     
     @FXML // fx:id="aPane"
-    public static AnchorPane aPane; // Value injected by FXMLLoader
+    public AnchorPane aPane; // Value injected by FXMLLoader
     
     @FXML // fx:id="aPane"
     private VBox scheduleIndividual; // Value injected by FXMLLoader

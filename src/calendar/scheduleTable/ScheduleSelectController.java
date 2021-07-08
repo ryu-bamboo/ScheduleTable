@@ -64,7 +64,7 @@ public class ScheduleSelectController {
 	    
 	    @FXML
 	    void jikkou(MouseEvent event) throws URISyntaxException {
-		if(!packageSelect.hasProperties()) {
+		if(packageSelect.getValue()==null) {
 			   packageSelect.setValue("default");
 			   }
 	    	var editData = adal.addData(packageSelect, year, month, day, scheduleName, sHour, sMinute, fHour, fMinute, scheduleSelect, memo);   
